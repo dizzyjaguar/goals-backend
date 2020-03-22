@@ -39,4 +39,30 @@ describe('todo routes', () => {
       });
   });
 
+  it('gets all todos', () => {
+    const todos = [
+      { title: 'clean the dishes', complete: false, description: 'go outside and clean the dishes' }, { title: 'finish the garden beds', complete: false, description: 'go outside and finish building your raised bed' }
+    ];
+
+    return Todo.create(todos)
+      .then(() => {
+        return request(app)
+          .get('/api/v1/todos');
+      })
+      .then(res => {
+        expect(res.body).toHaveLength(2);
+
+        todos.forEach(todo => {
+          expect(res.body).toContainEqual({
+            ...todo,
+            title: expect.any(String),
+            complete: expect.any(Boolean),
+            description: expect.any(String),
+            date: expect.any(String),
+            _id: expect.any(String),
+            __v: 0
+          });
+        });
+      });
+  });
 });

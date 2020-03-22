@@ -99,7 +99,7 @@ describe('todo routes', () => {
           .patch(`/api/v1/todos/${todo.id}`)
           .send({ title: 'corn cob' });
       })
-      .then( res => {
+      .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
           title: 'corn cob',
@@ -111,5 +111,25 @@ describe('todo routes', () => {
       });
   });
 
-  
+  it('deletes a todo by id', () => {
+    return Todo.create({
+      title: 'Hi there',
+      complete: false,
+      description: 'cool todo'
+    })
+      .then(todo => {
+        return request(app)
+          .delete(`/api/v1/todos/${todo.id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          title: 'Hi there',
+          complete: false,
+          description: 'cool todo',
+          date: expect.any(String),
+          __v: 0
+        });
+      });
+  });
 });

@@ -88,4 +88,28 @@ describe('todo routes', () => {
       });
   });
 
+  it('updates a todo by id', () => {
+    return Todo.create({
+      title: 'Hi there',
+      complete: false,
+      description: 'cool todo'
+    })
+      .then(todo => {
+        return request(app)
+          .patch(`/api/v1/todos/${todo.id}`)
+          .send({ title: 'corn cob' });
+      })
+      .then( res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          title: 'corn cob',
+          complete: false,
+          description: 'cool todo',
+          date: expect.any(String),
+          __v: 0
+        });
+      });
+  });
+
+  
 });

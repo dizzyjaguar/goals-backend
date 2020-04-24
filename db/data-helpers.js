@@ -4,6 +4,8 @@ const connect = require('../lib/utils/connect');
 const seed = require('../db/seed');
 const mongoose = require('mongoose');
 const fs = require('fs');
+const request = require('supertest');
+const app = require('../lib/app');
 
 beforeAll(() => {
   connect();

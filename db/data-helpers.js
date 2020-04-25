@@ -19,6 +19,16 @@ beforeEach(() => {
   return seed();
 });
 
+const agent = request.agent(app);
+beforeEach(() => {
+  return agent
+    .post('/api/v1/auth/login')
+    .send({
+      username: 'Eli',
+      password: '707weed'
+    });
+});
+
 afterAll(() => {
   return mongoose.connection.close();
 });
@@ -42,4 +52,7 @@ const getters = files
     };
   }, {});
 
-module.exports = getters;
+module.exports = {
+  ...getters,
+  getAgent: () => agent
+};

@@ -43,4 +43,16 @@ describe('auth routes', () => {
       });
   });
 
+  it('verifies a user', async() => {
+    return getAgent()
+      .get('/api/v1/auth/verify')
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          username: 'Eli',
+          __v: 0          
+        });
+      });
+  });
+
 });

@@ -1,26 +1,18 @@
-require('dotenv').config();
+// require('dotenv').config();
 
+const { getUser, getAgent, getTodos } = require('../db/data-helpers');
 const request = require('supertest');
 const app = require('../lib/app');
-const connect = require('../lib/utils/connect');
-const mongoose = require('mongoose');
-const Todo = require('../lib/models/Todo');
+// const connect = require('../lib/utils/connect');
+// const mongoose = require('mongoose');
+// const Todo = require('../lib/models/Todo');
+
 
 describe('todo routes', () => {
-  beforeAll(() => {
-    connect();
-  });
 
-  beforeEach(() => {
-    return mongoose.connection.dropDatabase();
-  });
 
-  afterAll(() => {
-    return mongoose.connection.close();
-  });
-
-  it('creates a new todo', () => {
-    return request(app)
+  it('creates a new todo without a user', async() => {
+    return getAgent()
       .post('/api/v1/todos')
       .send({
         title: 'REAL TEST',
@@ -39,97 +31,100 @@ describe('todo routes', () => {
       });
   });
 
-  it('gets all todos', () => {
-    const todos = [
-      { title: 'clean the dishes', complete: false, description: 'go outside and clean the dishes' }, { title: 'finish the garden beds', complete: false, description: 'go outside and finish building your raised bed' }
-    ];
+  it('creates a new todo WITH a user', async() => {
+    const user = await getUser({ username: 'Eli' });
 
-    return Todo.create(todos)
-      .then(() => {
-        return request(app)
-          .get('/api/v1/todos');
-      })
-      .then(res => {
-        expect(res.body).toHaveLength(2);
-
-        todos.forEach(todo => {
-          expect(res.body).toContainEqual({
-            ...todo,
-            title: expect.any(String),
-            complete: expect.any(Boolean),
-            description: expect.any(String),
-            date: expect.any(String),
-            _id: expect.any(String),
-            __v: 0
-          });
-        });
-      });
-  });
-
-  it('gets a todo by id', () => {
-    return Todo.create({
-      title: 'Hi there',
-      complete: false,
-      description: 'cool todo'
-    })
-      .then(todo => {
-        return request(app)
-          .get(`/api/v1/todos/${todo.id}`);
+    return getAgent()
+      .post('/api/v1/todos')
+      .send({
+        user: user,
+        title: 'Test with a user logged in',
+        complete: false,
+        description: 'this one was created after being logged in'
       })
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
-          title: 'Hi there',
+          user: user._id,
+          title: 'Test with a user logged in',
           complete: false,
-          description: 'cool todo',
+          description: 'this one was created after being logged in',
           date: expect.any(String),
           __v: 0
         });
       });
   });
 
-  it('updates a todo by id', () => {
-    return Todo.create({
-      title: 'Hi there',
-      complete: false,
-      description: 'cool todo'
-    })
-      .then(todo => {
-        return request(app)
-          .patch(`/api/v1/todos/${todo.id}`)
-          .send({ title: 'corn cob' });
-      })
-      .then(res => {
-        expect(res.body).toEqual({
-          _id: expect.any(String),
-          title: 'corn cob',
-          complete: false,
-          description: 'cool todo',
-          date: expect.any(String),
-          __v: 0
-        });
-      });
-  });
+  // it('gets all todos', async() => {
+  //   const todos = await getTodos();
+  //   return request(app)
+    
+  // });
 
-  it('deletes a todo by id', () => {
-    return Todo.create({
-      title: 'Hi there',
-      complete: false,
-      description: 'cool todo'
-    })
-      .then(todo => {
-        return request(app)
-          .delete(`/api/v1/todos/${todo.id}`);
-      })
-      .then(res => {
-        expect(res.body).toEqual({
-          _id: expect.any(String),
-          title: 'Hi there',
-          complete: false,
-          description: 'cool todo',
-          date: expect.any(String),
-          __v: 0
-        });
-      });
-  });
+  // it('gets a todo by id', () => {
+  //   return Todo.create({
+  //     title: 'Hi there',
+  //     complete: false,
+  //     description: 'cool todo'
+  //   })
+  //     .then(todo => {
+  //       return request(app)
+  //         .get(`/api/v1/todos/${todo.id}`);
+  //     })
+  //     .then(res => {
+  //       expect(res.body).toEqual({
+  //         _id: expect.any(String),
+  //         title: 'Hi there',
+  //         complete: false,
+  //         description: 'cool todo',
+  //         date: expect.any(String),
+  //         __v: 0
+  //       });
+  //     });
+  // });
+
+  // it('updates a todo by id', () => {
+  //   return Todo.create({
+  //     title: 'Hi there',
+  //     complete: false,
+  //     description: 'cool todo'
+  //   })
+  //     .then(todo => {
+  //       return request(app)
+  //         .patch(`/api/v1/todos/${todo.id}`)
+  //         .send({ title: 'corn cob' });
+  //     })
+  //     .then(res => {
+  //       expect(res.body).toEqual({
+  //         _id: expect.any(String),
+  //         title: 'corn cob',
+  //         complete: false,
+  //         description: 'cool todo',
+  //         date: expect.any(String),
+  //         __v: 0
+  //       });
+  //     });
+  // });
+
+  // it('deletes a todo by id', () => {
+  //   return Todo.create({
+  //     title: 'Hi there',
+  //     complete: false,
+  //     description: 'cool todo'
+  //   })
+  //     .then(todo => {
+  //       return request(app)
+  //         .delete(`/api/v1/todos/${todo.id}`);
+  //     })
+  //     .then(res => {
+  //       expect(res.body).toEqual({
+  //         _id: expect.any(String),
+  //         title: 'Hi there',
+  //         complete: false,
+  //         description: 'cool todo',
+  //         date: expect.any(String),
+  //         __v: 0
+  //       });
+  //     });
+  // });
 });

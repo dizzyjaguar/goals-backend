@@ -47,7 +47,9 @@ const getters = files
   .reduce((acc, Model) => {
     return {
       ...acc,
+      //singular get for example getTodo
       [`get${Model.modelName}`]: (query, select) => Model.findOne(query).select(select).then(prepare),
+      //plural get for example getTodos
       [`get${Model.modelName}s`]: (query, select) => Model.find(query).select(select).then(prepareAll)
     };
   }, {});

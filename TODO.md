@@ -1,8 +1,8 @@
 [] write tests for my routes 
 
-[] Create Goal Schema
+[x] Create Goal Schema
 
-[] Watch Auth lecture and build out user authentication
+[x] Watch Auth lecture and build out user authentication
 
-[] Create User and Todo/Goals aggregate/virutal??
+[x] Create User and Todo/Goals aggregate/virutal??
 

@@ -7,17 +7,26 @@ const fs = require('fs');
 const request = require('supertest');
 const app = require('../lib/app');
 
+//EVERYTIME YOU RUN TESTS THIS WILL HAPPEN
+//WIPING ANY DATA THAT YOU CREATED
+//SEEDING IT WITH RANDOM DATA
+
+//CONSIDER MAKING ANOTHER DATABASE JUST FOR RUNNING TESTS SO IF YOU HAVE 
+//REAL DATA YOU DONT WANT TO GET RID OF IT WONT GET WIPED OFF
+
+
 beforeAll(() => {
   connect();
 });
-
+// this is wiping and seeding the database
 beforeEach(() => {
   return mongoose.connection.dropDatabase();
 });
 
-beforeEach(() => {
-  return seed();
-});
+// commented out to stop seeding the database unnecssarily
+// beforeEach(() => {
+//   return seed();
+// });
 
 const agent = request.agent(app);
 beforeEach(() => {
